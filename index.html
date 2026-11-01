@@ -22,7 +22,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#0b0d18">
-<meta name="description" content="yaqix (yet another qix): clone del classico arcade Qix per cellulare e tablet, con pad direzionale e pulsante lento.">
+<meta name="description" content="yaqix (yet another qix): clone del classico arcade Qix per cellulare e tablet, con pad direzionale e pulsanti lento e veloce.">
 <title>yaqix</title>
 <!-- @artifact-start -->
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -83,7 +83,10 @@
     </div>
   </div>
   <div class="btnwrap">
-    <button class="slow" id="slow" data-i18n-aria="aria.slow" aria-label="Lento: traccia piano, punti doppi"><strong data-i18n="slow.label">LENTO</strong><small data-i18n="slow.hint">punti ×2</small></button>
+    <div class="acts" id="acts">
+      <button class="act slow" id="slow" data-i18n-aria="aria.slow" aria-label="Lento: traccia piano, punti doppi"><strong data-i18n="slow.label">LENTO</strong><small data-i18n="slow.hint">punti ×2</small></button>
+      <button class="act fast" id="fast" data-i18n-aria="aria.fast" aria-label="Veloce: traccia in fretta, punti normali"><strong data-i18n="fast.label">VELOCE</strong><small data-i18n="fast.hint">punti ×1</small></button>
+    </div>
   </div>
 </div>
 <!-- @artifact-body-end -->

@@ -18,7 +18,7 @@
  */
 
 /* Layout: schermo arcade a una pagina — HUD in alto, campo al centro,
-   pad e pulsante LENTO sotto (verticale) o ai lati (orizzontale).
+   pad e pulsanti LENTO/VELOCE sotto (verticale) o ai lati (orizzontale).
    Tema unico scuro, scelto deliberatamente. */
 :root {
   --bg: #0b0d18;
@@ -236,24 +236,31 @@ canvas {
 .pad[data-dir="left"] .k-left, .pad[data-dir="right"] .k-right { fill: var(--hot); }
 .pad[data-dir]:not([data-dir=""]) .knob { fill: var(--hot); stroke: #fff; }
 
-.slow {
-  width: clamp(104px, min(30vw, 20vh), 170px);
+/* pulsanti d'azione: disposti in diagonale come su un gamepad.
+   VELOCE in basso verso il centro dello schermo, LENTO in alto verso il bordo;
+   con la disposizione per mancini la diagonale si specchia. */
+.acts { width: clamp(128px, min(40vw, 27vh), 220px); aspect-ratio: 1; max-width: 100%; position: relative; touch-action: none; }
+.act {
+  position: absolute;
+  width: 57%;
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 2px solid #6b4a12;
-  background: radial-gradient(circle at 35% 30%, #3a2a10, #1d160b);
-  color: var(--slow);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   touch-action: none;
   transition: transform .06s;
 }
-.slow strong { font-family: var(--display); font-size: clamp(15px, 4.4vw, 20px); font-weight: 700; }
-.slow small { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
-.slow.on { background: var(--slow); color: #1d1205; border-color: var(--slow); transform: scale(.95); }
+.act strong { font-family: var(--display); font-size: clamp(12px, 3.5vw, 18px); font-weight: 700; }
+.act small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+.act.fast { left: 0; bottom: 0; border: 2px solid #23407f; background: radial-gradient(circle at 35% 30%, #18264a, #0c1428); color: #8fb0ff; }
+.act.slow { right: 0; top: 0; border: 2px solid #6b4a12; background: radial-gradient(circle at 35% 30%, #3a2a10, #1d160b); color: var(--slow); }
+.app.lefty .act.fast { left: auto; right: 0; }
+.app.lefty .act.slow { right: auto; left: 0; }
+.act.fast.on { background: var(--fast); color: #fff; border-color: #8fb0ff; transform: scale(.95); }
+.act.slow.on { background: var(--slow); color: #1d1205; border-color: var(--slow); transform: scale(.95); }
 
 /* ---------- orizzontale: controlli ai lati del campo ---------- */
 @media (orientation: landscape) {
@@ -261,9 +268,9 @@ canvas {
   .app.lefty { grid-template-areas: "hud hud hud" "btn stage pad"; }
   .app .padwrap, .app .btnwrap, .app.lefty .padwrap, .app.lefty .btnwrap { justify-self: center; }
   .pad { width: clamp(120px, min(26vw, 46vh), 230px); }
-  .slow { width: clamp(96px, min(20vw, 34vh), 170px); }
+  .acts { width: clamp(120px, min(26vw, 46vh), 230px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .toast, .slow { transition: none; }
+  .toast, .act { transition: none; }
 }

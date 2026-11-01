@@ -26,6 +26,8 @@
 const GW = 80, GH = 100, N = GW * GH;          // campo in celle logiche
 const EMPTY = 0, CLAIMED = 1, TRAIL = 2;      // stati di una cella
 const TARGET = 75;                            // percentuale da conquistare
+const SPEED_EDGE = 24, SPEED_FAST = 24, SPEED_SLOW = 11; // celle al secondo
+const PTS_FAST = 10, PTS_SLOW = 20;           // punti per cella conquistata
 const BORDER = 2 * GW + 2 * (GH - 2), INTERIOR = N - BORDER;
 const I18N_URL = 'i18n.json';
 
@@ -39,7 +41,7 @@ const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 
 const $ = id => document.getElementById(id);
 const cv = $('cv'), ctx = cv.getContext('2d'), stage = $('stage'), overlay = $('overlay');
-const pad = $('pad'), knob = $('knob'), slowBtn = $('slow');
+const pad = $('pad'), knob = $('knob'), acts = $('acts'), slowBtn = $('slow'), fastBtn = $('fast');
 const field = document.createElement('canvas'); field.width = GW; field.height = GH;
 const fctx = field.getContext('2d'), fimg = fctx.createImageData(GW, GH);
 let S = 4; // pixel per cella sul canvas visibile
@@ -223,13 +225,15 @@ function spawnSparx() {
 /* =====================================================================
    Giocatore
    ===================================================================== */
+/* Senza pulsanti il cursore percorre solo i bordi esistenti.
+   Con LENTO o VELOCE premuto può entrare nel campo vuoto e tracciare. */
 function tryStep(dx, dy) {
   const p = player, nx = p.x + dx, ny = p.y + dy;
   if (!inb(nx, ny)) return false;
   const n = ny * GW + nx, c = grid[n];
   if (!p.drawing) {
     if (c === CLAIMED) { if (!edge[n]) return false; p.x = nx; p.y = ny; return true; }
-    if (c === EMPTY) {
+    if (c === EMPTY && input.mode) {
       p.drawing = true; p.start = p.y * GW + p.x; p.trail = []; p.tslow = []; p.allSlow = true;
       return addTrail(n, nx, ny);
     }
@@ -241,8 +245,9 @@ function tryStep(dx, dy) {
 }
 function addTrail(n, nx, ny) {
   const p = player;
-  grid[n] = TRAIL; p.trail.push(n); p.tslow.push(input.slow);
-  if (!input.slow) p.allSlow = false;
+  const slow = input.mode === 'slow';
+  grid[n] = TRAIL; p.trail.push(n); p.tslow.push(slow);
+  if (!slow) p.allSlow = false; // basta un tratto veloce perché l'area valga punti normali
   p.x = nx; p.y = ny;
   for (const q of qixes) if (Math.floor(q.x) === nx && Math.floor(q.y) === ny) { die(); return false; }
   return true;
@@ -264,7 +269,7 @@ function closeTrail() {
   for (let i = 0; i < N; i++) if (grid[i] === EMPTY && !mark[i]) { grid[i] = CLAIMED; fc[i] = col; added++; }
   claimed += added;
   if (split && !splitDone) { splitDone = true; mult = 2; toast(t('toast.split')); }
-  const pts = Math.round(added * (p.allSlow ? 20 : 10) * mult);
+  const pts = Math.round(added * (p.allSlow ? PTS_SLOW : PTS_FAST) * mult);
   score += pts;
   popups.push({ x: p.x, y: p.y, text: '+' + fmt(pts), t: 1.2, slow: p.allSlow });
   p.drawing = false; p.trail = []; p.tslow = []; p.fuse = -1; p.still = 0;
@@ -282,9 +287,12 @@ function closeTrail() {
 }
 function updatePlayer(dt) {
   const p = player, d = input.dir;
-  if (d) {
+  // mentre si traccia, senza pulsante premuto il cursore resta fermo
+  const canMove = d && (!p.drawing || input.mode);
+  if (canMove) {
     p.still = 0; p.fuse = -1;
-    p.acc += (p.drawing ? (input.slow ? 10 : 20) : 24) * dt;
+    const speed = !p.drawing ? SPEED_EDGE : (input.mode === 'slow' ? SPEED_SLOW : SPEED_FAST);
+    p.acc += speed * dt;
     while (p.acc >= 1 && state === 'play') {
       p.acc -= 1;
       if (!tryStep(d[0], d[1])) { p.acc = 0; break; }
@@ -582,7 +590,7 @@ function draw() {
   // cursore (lampeggia durante l'invulnerabilità)
   if (!(invuln > 0 && state === 'play' && Math.floor(time * 12) % 2)) {
     const cx = (p.x + 0.5) * S, cy = (p.y + 0.5) * S, r = S * 1.6;
-    ctx.fillStyle = p.drawing && input.slow ? '#ffc455' : '#ff4d8a';
+    ctx.fillStyle = input.mode === 'slow' ? '#ffc455' : input.mode === 'fast' ? '#80dcff' : '#ff4d8a';
     ctx.strokeStyle = '#fff'; ctx.lineWidth = Math.max(1, S * 0.3);
     ctx.beginPath(); ctx.moveTo(cx, cy - r); ctx.lineTo(cx + r, cy); ctx.lineTo(cx, cy + r); ctx.lineTo(cx - r, cy); ctx.closePath();
     ctx.fill(); ctx.stroke();
@@ -617,10 +625,10 @@ function fit() {
 }
 
 /* =====================================================================
-   Comandi: pad, pulsante LENTO, tastiera
+   Comandi: pad, pulsanti LENTO e VELOCE, tastiera
    ===================================================================== */
-const input = { dir: null, slow: false };
-let padId = null, padDir = null, slowId = null, slowTouch = false, keySlow = false, keys = [];
+const input = { dir: null, mode: null }; // mode: null (solo bordi), 'slow' o 'fast'
+let padId = null, padDir = null, actId = null, actTouch = null, keySlow = false, keyFast = false, keys = [];
 
 function padSet(e) {
   const r = pad.getBoundingClientRect();
@@ -659,26 +667,44 @@ const padEnd = e => {
 };
 ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => pad.addEventListener(ev, padEnd));
 
-slowBtn.addEventListener('pointerdown', e => {
+/* I due pulsanti d'azione condividono un solo dito: il pollice può scivolare
+   da LENTO a VELOCE e viceversa senza staccarsi dallo schermo. */
+function actSet(e) {
+  const dist = btn => {
+    const r = btn.getBoundingClientRect();
+    return Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) / (r.width / 2);
+  };
+  const s = dist(slowBtn), f = dist(fastBtn);
+  const m = Math.min(s, f) <= 1.15 ? (s < f ? 'slow' : 'fast') : null;
+  if (m !== actTouch) {
+    actTouch = m;
+    if (m) try { navigator.vibrate && navigator.vibrate(6); } catch (_) {}
+  }
+}
+acts.addEventListener('pointerdown', e => {
   e.preventDefault();
-  if (slowId !== null) return;
-  slowId = e.pointerId;
-  try { slowBtn.setPointerCapture(e.pointerId); } catch (_) {}
-  slowTouch = true;
+  if (actId !== null) return;
+  actId = e.pointerId;
+  try { acts.setPointerCapture(e.pointerId); } catch (_) {}
+  actSet(e);
 });
-const slowEnd = e => { if (e.pointerId !== slowId) return; slowId = null; slowTouch = false; };
-['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => slowBtn.addEventListener(ev, slowEnd));
+acts.addEventListener('pointermove', e => { if (e.pointerId === actId) actSet(e); });
+const actEnd = e => { if (e.pointerId !== actId) return; actId = null; actTouch = null; };
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => acts.addEventListener(ev, actEnd));
 
 document.addEventListener('contextmenu', e => e.preventDefault());
 // blocca lo scorrimento della pagina, tranne dentro i pannelli
 document.addEventListener('touchmove', e => { if (!overlay.contains(e.target)) e.preventDefault(); }, { passive: false });
 
 const KEYMAP = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right' };
-const isSlowKey = c => c === 'Space' || c === 'ShiftLeft' || c === 'ShiftRight';
+// LENTO e VELOCE da entrambi i lati: Z/X con le frecce, J/K con WASD
+const isSlowKey = c => c === 'KeyZ' || c === 'KeyJ';
+const isFastKey = c => c === 'KeyX' || c === 'KeyK';
 addEventListener('keydown', e => {
   const d = KEYMAP[e.code];
   if (d) { e.preventDefault(); keys = keys.filter(k => k !== d); keys.push(d); return; }
   if (isSlowKey(e.code)) { e.preventDefault(); keySlow = true; return; }
+  if (isFastKey(e.code)) { e.preventDefault(); keyFast = true; return; }
   if (e.code === 'KeyP' || e.code === 'Escape') {
     if (overlayKind === 'settings') closeSettings(); else togglePause();
   }
@@ -687,8 +713,9 @@ addEventListener('keyup', e => {
   const d = KEYMAP[e.code];
   if (d) keys = keys.filter(k => k !== d);
   if (isSlowKey(e.code)) keySlow = false;
+  if (isFastKey(e.code)) keyFast = false;
 });
-addEventListener('blur', () => { keys = []; keySlow = false; });
+addEventListener('blur', () => { keys = []; keySlow = false; keyFast = false; });
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && state === 'play') togglePause();
   else if (!document.hidden) requestWake();
@@ -735,8 +762,10 @@ function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
   last = now;
   input.dir = padDir ? DIRS[padDir] : (keys.length ? DIRS[keys[keys.length - 1]] : null);
-  input.slow = slowTouch || keySlow;
-  slowBtn.classList.toggle('on', input.slow);
+  // se sono premuti entrambi i tasti prevale LENTO
+  input.mode = actTouch || (keySlow ? 'slow' : keyFast ? 'fast' : null);
+  slowBtn.classList.toggle('on', input.mode === 'slow');
+  fastBtn.classList.toggle('on', input.mode === 'fast');
   if (state !== 'paused') time += dt;
 
   if (state === 'play') {

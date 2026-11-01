@@ -19,18 +19,22 @@
     "aria.pad":           { "it": "Controllo direzionale",     "en": "Direction control" },
     "aria.slow":          { "it": "Lento: traccia piano, punti doppi", "en": "Slow: draw slowly, double points" },
 
+    "aria.fast":          { "it": "Veloce: traccia in fretta, punti normali", "en": "Fast: draw quickly, normal points" },
+
     "slow.label":         { "it": "LENTO",                     "en": "SLOW" },
     "slow.hint":          { "it": "punti ×2",                  "en": "points ×2" },
+    "fast.label":         { "it": "VELOCE",                    "en": "FAST" },
+    "fast.hint":          { "it": "punti ×1",                  "en": "points ×1" },
 
     "title.tagline":      { "it": "yet another qix",           "en": "yet another qix" },
     "title.intro":        { "it": "Conquista il {target}% del campo tracciando linee, senza farti toccare.", "en": "Claim {target}% of the field by drawing lines, without getting hit." },
-    "title.rule.move":    { "it": "Muoviti lungo i bordi bianchi con il pad. Entra nel campo vuoto per tracciare, chiudi su un bordo per prenderti l'area.", "en": "Move along the white edges with the pad. Step into the empty field to draw, and close on an edge to claim the area." },
-    "title.rule.slow":    { "it": "Tieni premuto LENTO mentre tracci: vai più piano e l'area vale il doppio.", "en": "Hold SLOW while drawing: you move more slowly and the area is worth double." },
+    "title.rule.move":    { "it": "Con il solo pad ti muovi sui bordi bianchi. Per entrare nel campo e tracciare tieni premuto VELOCE o LENTO, poi chiudi su un bordo per prenderti l'area.", "en": "With the pad alone you move along the white edges. To step into the field and draw, hold FAST or SLOW, then close on an edge to claim the area." },
+    "title.rule.slow":    { "it": "VELOCE traccia in fretta a punti normali. LENTO traccia piano e l'area vale il doppio, ma solo se tutta la linea è lenta.", "en": "FAST draws quickly for normal points. SLOW draws slowly and the area is worth double, but only if the whole line is slow." },
     "title.rule.danger":  { "it": "Il groviglio colorato non deve toccare la tua linea. Le scintille gialle corrono sui bordi.", "en": "The coloured tangle must not touch your line. Yellow sparks run along the edges." },
-    "title.rule.bonus":   { "it": "Se ti fermi a metà linea parte la miccia. Separa due grovigli per punti ×2.", "en": "Stop halfway through a line and the fuse is lit. Split two tangles for ×2 points." },
+    "title.rule.bonus":   { "it": "Se lasci il pulsante a metà linea ti fermi e parte la miccia. Separa due grovigli per punti ×2.", "en": "Release the button halfway through a line and you stop as the fuse is lit. Split two tangles for ×2 points." },
     "title.play":         { "it": "Gioca",                     "en": "Play" },
     "title.settings":     { "it": "Impostazioni",              "en": "Settings" },
-    "title.keys":         { "it": "Record: {best} · Tastiera: frecce o WASD, Spazio = LENTO, P = pausa", "en": "Best: {best} · Keyboard: arrows or WASD, Space = SLOW, P = pause" },
+    "title.keys":         { "it": "Record: {best} · Tastiera: frecce con Z = LENTO e X = VELOCE, oppure WASD con J = LENTO e K = VELOCE; P = pausa", "en": "Best: {best} · Keyboard: arrows with Z = SLOW and X = FAST, or WASD with J = SLOW and K = FAST; P = pause" },
     "title.license":      { "it": "Software libero, GPL-3.0-or-later", "en": "Free software, GPL-3.0-or-later" },
 
     "pause.title":        { "it": "Pausa",                     "en": "Paused" },
