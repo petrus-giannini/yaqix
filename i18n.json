@@ -1,0 +1,66 @@
+{
+  "_info": "yaqix — lemmi dell'interfaccia. Ogni chiave contiene una voce per lingua. I segnaposto tra graffe, ad esempio {level}, vengono sostituiti dal codice. Per aggiungere una lingua: aggiungerla in 'languages' e aggiungere la voce corrispondente a ogni chiave di 'strings'. Licenza: GPL-3.0-or-later.",
+  "default": "it",
+  "languages": {
+    "it": { "name": "Italiano", "short": "IT", "locale": "it-IT" },
+    "en": { "name": "English", "short": "EN", "locale": "en-GB" }
+  },
+  "strings": {
+    "hud.score":          { "it": "Punti",                     "en": "Score" },
+    "hud.best":           { "it": "Record",                    "en": "Best" },
+    "hud.area":           { "it": "Area",                      "en": "Area" },
+    "hud.level":          { "it": "Liv.",                      "en": "Lvl" },
+    "hud.lives":          { "it": "Vite",                      "en": "Lives" },
+
+    "aria.language":      { "it": "Lingua: italiano. Tocca per passare all'inglese", "en": "Language: English. Tap to switch to Italian" },
+    "aria.settings":      { "it": "Impostazioni",              "en": "Settings" },
+    "aria.pause":         { "it": "Pausa",                     "en": "Pause" },
+    "aria.field":         { "it": "Campo di gioco",            "en": "Playfield" },
+    "aria.pad":           { "it": "Controllo direzionale",     "en": "Direction control" },
+    "aria.slow":          { "it": "Lento: traccia piano, punti doppi", "en": "Slow: draw slowly, double points" },
+
+    "slow.label":         { "it": "LENTO",                     "en": "SLOW" },
+    "slow.hint":          { "it": "punti ×2",                  "en": "points ×2" },
+
+    "title.tagline":      { "it": "yet another qix",           "en": "yet another qix" },
+    "title.intro":        { "it": "Conquista il {target}% del campo tracciando linee, senza farti toccare.", "en": "Claim {target}% of the field by drawing lines, without getting hit." },
+    "title.rule.move":    { "it": "Muoviti lungo i bordi bianchi con il pad. Entra nel campo vuoto per tracciare, chiudi su un bordo per prenderti l'area.", "en": "Move along the white edges with the pad. Step into the empty field to draw, and close on an edge to claim the area." },
+    "title.rule.slow":    { "it": "Tieni premuto LENTO mentre tracci: vai più piano e l'area vale il doppio.", "en": "Hold SLOW while drawing: you move more slowly and the area is worth double." },
+    "title.rule.danger":  { "it": "Il groviglio colorato non deve toccare la tua linea. Le scintille gialle corrono sui bordi.", "en": "The coloured tangle must not touch your line. Yellow sparks run along the edges." },
+    "title.rule.bonus":   { "it": "Se ti fermi a metà linea parte la miccia. Separa due grovigli per punti ×2.", "en": "Stop halfway through a line and the fuse is lit. Split two tangles for ×2 points." },
+    "title.play":         { "it": "Gioca",                     "en": "Play" },
+    "title.settings":     { "it": "Impostazioni",              "en": "Settings" },
+    "title.keys":         { "it": "Record: {best} · Tastiera: frecce o WASD, Spazio = LENTO, P = pausa", "en": "Best: {best} · Keyboard: arrows or WASD, Space = SLOW, P = pause" },
+    "title.license":      { "it": "Software libero, GPL-3.0-or-later", "en": "Free software, GPL-3.0-or-later" },
+
+    "pause.title":        { "it": "Pausa",                     "en": "Paused" },
+    "pause.status":       { "it": "Livello {level} · {score} punti", "en": "Level {level} · {score} points" },
+    "pause.resume":       { "it": "Riprendi",                  "en": "Resume" },
+    "pause.restart":      { "it": "Ricomincia",                "en": "Restart" },
+
+    "over.title":         { "it": "Fine partita",              "en": "Game over" },
+    "over.newBest":       { "it": "Nuovo record.",             "en": "New best score." },
+    "over.best":          { "it": "Record: {best}.",           "en": "Best: {best}." },
+    "over.level":         { "it": "Livello raggiunto: {level}.", "en": "Level reached: {level}." },
+    "over.again":         { "it": "Rigioca",                   "en": "Play again" },
+
+    "settings.title":     { "it": "Impostazioni",              "en": "Settings" },
+    "settings.language":  { "it": "Lingua",                    "en": "Language" },
+    "settings.layout":    { "it": "Disposizione",              "en": "Layout" },
+    "settings.padLeft":   { "it": "Pad a sinistra",            "en": "Pad on the left" },
+    "settings.padRight":  { "it": "Pad a destra",              "en": "Pad on the right" },
+    "settings.control":   { "it": "Controllo direzionale",     "en": "Direction control" },
+    "settings.arrows":    { "it": "Frecce",                    "en": "Arrows" },
+    "settings.stick":     { "it": "Pad sensibile",             "en": "Touch pad" },
+    "settings.controlHelp": { "it": "Frecce: conta il braccio sotto il dito. Pad sensibile: la direzione dipende da dove si trova il dito rispetto al centro del cerchio.", "en": "Arrows: only the arm under your finger counts. Touch pad: the direction depends on where your finger is relative to the centre of the circle." },
+    "settings.sound":     { "it": "Suono",                     "en": "Sound" },
+    "settings.on":        { "it": "Attivo",                    "en": "On" },
+    "settings.off":       { "it": "Spento",                    "en": "Off" },
+    "settings.done":      { "it": "Fatto",                     "en": "Done" },
+
+    "toast.split":        { "it": "Grovigli separati · punti ×2 per il livello", "en": "Tangles split · ×2 points for this level" },
+    "toast.cleared":      { "it": "Livello {level} completato", "en": "Level {level} cleared" },
+    "toast.bonus":        { "it": " · bonus {bonus}",          "en": " · bonus {bonus}" },
+    "toast.language":     { "it": "Lingua: italiano",          "en": "Language: English" }
+  }
+}
